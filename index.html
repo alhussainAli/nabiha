@@ -329,9 +329,11 @@ tr.detail .an{max-width:640px}
     </div>
     <div class="promo">
       <h2>تعلّم بالحركة مع ألعاب إديوبوند</h2>
+      <p class="bubble" id="promo-rec" hidden></p>
       <p>ألعاب حقيقية تتصل بتطبيق إديوبوند وتتحرك مع إجابات طفلك: سيارة السباق تتقدم مع كل إجابة صحيحة، وصندوق الحظ يضيء ويكافئ. أسئلة على مستويات بلوم من الروضة إلى الابتدائي.</p>
       <div class="row">
-        <a class="btn btn-purple" href="https://www.edubond.sa/site?utm_source=nabiha&utm_medium=quiz&utm_campaign=mawhiba_g5" target="_blank" rel="noopener">تعرّف على الألعاب</a>
+        <a class="btn btn-purple" id="promo-btn" href="https://www.edubond.sa/site?utm_source=nabiha&utm_medium=quiz&utm_campaign=mawhiba_g5" target="_blank" rel="noopener">تعرّف على الألعاب</a>
+        <a class="btn btn-line" id="promo-all" href="https://store.edubond.sa/ar/edubond-innovative-toys/c2058348084?utm_source=nabiha&utm_medium=quiz&utm_campaign=mawhiba_g5&utm_content=all_toys" target="_blank" rel="noopener" hidden>كل الألعاب</a>
         <a class="btn btn-line" href="https://apps.apple.com/app/id6759533012" target="_blank" rel="noopener">App Store</a>
         <a class="btn btn-line" href="https://play.google.com/store/apps/details?id=com.edubond.app" target="_blank" rel="noopener">Google Play</a>
       </div>
@@ -1279,6 +1281,33 @@ ${JSON.stringify(data)}
   finally{b.disabled=false}
 };
 
+/* ---------- recommendation ---------- */
+const RECO={
+ verbal:{name:"صندوق الحظ التعليمي",url:"https://store.edubond.sa/ar/%D8%B5%D9%86%D8%AF%D9%88%D9%82-%D8%A7%D9%84%D8%AD%D8%B8-%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85%D9%8A-%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B9%D9%84%D9%8A/p1040085275",why:"يضيء ويكافئ مع كل إجابة صحيحة، فتصير مراجعة المفردات وفهم المقروء لعبة ينتظرها الطفل."},
+ quant:{name:"سيارة السباق التفاعلية",url:"https://store.edubond.sa/ar/%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%B3%D8%A8%D8%A7%D9%82-%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B9%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85%D9%8A%D8%A9/p1450946205",why:"تتقدم مع كل إجابة صحيحة في أسئلة الحساب، فتتحول المسائل إلى سباق يتحمس له الطفل."},
+ flex:{name:"ألعاب العلوم الميكانيكية",url:"https://store.edubond.sa/ar/mechanical-science-toys/c1852865124",why:"تركيب وتروس ونماذج متحركة تقوّي التفكير المكاني الذي تقيسه أسئلة التدوير وطي الورق وفرد المكعب."},
+ science:{name:"المجسمات التعليمية ثلاثية الأبعاد",url:"https://store.edubond.sa/ar/educational-3d-models/c1109090864",why:"مجسمات يمسكها الطفل ويفككها، فتصير مفاهيم العلوم شيئًا يراه بعينه لا كلامًا يحفظه."}
+};
+function updatePromo(rec){
+  try{
+    const box=$("promo-rec"),btn=$("promo-btn"),all=$("promo-all");
+    if(!rec||!rec.secs){return}
+    const rows=ORDER.filter(k=>rec.secs[k]&&rec.secs[k][1]>0).map(k=>({k,c:rec.secs[k][0],n:rec.secs[k][1],r:rec.secs[k][0]/rec.secs[k][1]}));
+    if(!rows.length)return;
+    rows.sort((a,b)=>a.r-b.r);
+    const w=rows[0],allStrong=w.r>=0.8;
+    const key=allStrong?"quant":w.k,R=RECO[key];
+    box.textContent=allStrong
+      ?`أداء قوي في كل الأقسام! لتحدٍّ أكبر جرّب «${R.name}»: ${R.why}`
+      :`أكثر قسم يحتاج تدريبًا: ${SECS[w.k].full} (${w.c} من ${w.n}). لعبة تساعد عليه: «${R.name}». ${R.why}`;
+    box.hidden=false;
+    btn.textContent="شاهد «"+R.name+"»";
+    btn.href=R.url+"?utm_source=nabiha&utm_medium=quiz&utm_campaign=mawhiba_g5&utm_content=reco_"+(allStrong?"strong":w.k);
+    btn.onclick=()=>{try{gtag('event','reco_click',{section:allStrong?'strong':w.k,product:R.name})}catch(e){}};
+    all.hidden=false;
+  }catch(e){}
+}
+try{const _rr=renderResult;renderResult=function(){const out=_rr.apply(this,arguments);try{updatePromo(lastRec&&lastRec.rec)}catch(e){}return out};}catch(e){}
 /* ---------- analytics ---------- */
 try{const _sq=startQuiz;startQuiz=function(qs,src){try{gtag('event','quiz_start',{quiz_source:src||'bank'})}catch(e){}return _sq.apply(this,arguments)};
 const _gr=grade;grade=async function(){const r=await _gr.apply(this,arguments);try{gtag('event','quiz_complete',{score_text:((($("r-sub")||{}).textContent||"")+"").slice(0,90)})}catch(e){}return r};}catch(e){}
