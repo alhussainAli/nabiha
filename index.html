@@ -6,6 +6,7 @@
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#7B3E98">
 <link rel="canonical" href="https://nabiha.edubond.sa/">
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','771462405953742');fbq('track','PageView');</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SCREZ2NT8P"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-SCREZ2NT8P',{linker:{domains:['edubond.sa','www.edubond.sa','store.edubond.sa','nabiha.edubond.sa']}});</script>
 <meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
@@ -1303,14 +1304,14 @@ function updatePromo(rec){
     box.hidden=false;
     btn.textContent="شاهد «"+R.name+"»";
     btn.href=R.url+"?utm_source=nabiha&utm_medium=quiz&utm_campaign=mawhiba_g5&utm_content=reco_"+(allStrong?"strong":w.k);
-    btn.onclick=()=>{try{gtag('event','reco_click',{section:allStrong?'strong':w.k,product:R.name})}catch(e){}};
+    btn.onclick=()=>{try{gtag('event','reco_click',{section:allStrong?'strong':w.k,product:R.name});try{fbq('trackCustom','NabihaRecoClick',{product:R.name})}catch(e){}}catch(e){}};
     all.hidden=false;
   }catch(e){}
 }
 try{const _rr=renderResult;renderResult=function(){const out=_rr.apply(this,arguments);try{updatePromo(lastRec&&lastRec.rec)}catch(e){}return out};}catch(e){}
 /* ---------- analytics ---------- */
-try{const _sq=startQuiz;startQuiz=function(qs,src){try{gtag('event','quiz_start',{quiz_source:src||'bank'})}catch(e){}return _sq.apply(this,arguments)};
-const _gr=grade;grade=async function(){const r=await _gr.apply(this,arguments);try{gtag('event','quiz_complete',{score_text:((($("r-sub")||{}).textContent||"")+"").slice(0,90)})}catch(e){}return r};}catch(e){}
+try{const _sq=startQuiz;startQuiz=function(qs,src){try{gtag('event','quiz_start',{quiz_source:src||'bank'});try{fbq('trackCustom','NabihaQuizStart')}catch(e){}}catch(e){}return _sq.apply(this,arguments)};
+const _gr=grade;grade=async function(){const r=await _gr.apply(this,arguments);try{try{fbq('trackCustom','NabihaQuizComplete')}catch(e){}gtag('event','quiz_complete',{score_text:((($("r-sub")||{}).textContent||"")+"").slice(0,90)})}catch(e){}return r};}catch(e){}
 $("share-wa").addEventListener("click",()=>{try{gtag('event','share',{method:'whatsapp'})}catch(e){}});
 /* ---------- share ---------- */
 $("share-wa").href="https://wa.me/?text="+encodeURIComponent(SHARE_TXT+PAGE_URL);
